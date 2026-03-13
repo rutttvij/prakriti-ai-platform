@@ -1,0 +1,44 @@
+from enum import Enum
+
+
+class QRTagType(str, Enum):
+    HOUSEHOLD = "HOUSEHOLD"
+    BULK_GENERATOR = "BULK_GENERATOR"
+    GENERIC = "GENERIC"
+
+
+class AssignedEntityType(str, Enum):
+    HOUSEHOLD = "HOUSEHOLD"
+    BULK_GENERATOR = "BULK_GENERATOR"
+
+
+class DwellingType(str, Enum):
+    APARTMENT = "APARTMENT"
+    INDEPENDENT_HOUSE = "INDEPENDENT_HOUSE"
+    SLUM = "SLUM"
+    GATED_COMMUNITY = "GATED_COMMUNITY"
+    OTHER = "OTHER"
+
+
+class OnboardingStatus(str, Enum):
+    PENDING = "PENDING"
+    IN_PROGRESS = "IN_PROGRESS"
+    COMPLETED = "COMPLETED"
+    REJECTED = "REJECTED"
+
+
+class GeneratorType(str, Enum):
+    HOTEL = "HOTEL"
+    RESTAURANT = "RESTAURANT"
+    MARKET = "MARKET"
+    INSTITUTION = "INSTITUTION"
+    HOSPITAL = "HOSPITAL"
+    INDUSTRY = "INDUSTRY"
+    COMMERCIAL_COMPLEX = "COMMERCIAL_COMPLEX"
+    OTHER = "OTHER"
+
+
+class ComplianceStatus(str, Enum):
+    COMPLIANT = "COMPLIANT"
+    NON_COMPLIANT = "NON_COMPLIANT"
+    UNDER_REVIEW = "UNDER_REVIEW"
