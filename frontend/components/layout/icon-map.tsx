@@ -1,5 +1,6 @@
 import {
   BarChart3,
+  Bell,
   Building2,
   ClipboardCheck,
   ClipboardList,
@@ -18,6 +19,7 @@ import {
   ShieldCheck,
   Truck,
   Users,
+  AlertTriangle,
   type LucideIcon,
 } from "lucide-react";
 
@@ -41,4 +43,6 @@ export const iconMap: Record<string, LucideIcon> = {
   Leaf,
   ReceiptText,
   BarChart3,
+  Bell,
+  AlertTriangle,
 };

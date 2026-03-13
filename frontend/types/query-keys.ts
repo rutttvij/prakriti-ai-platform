@@ -19,6 +19,10 @@ export const queryKeys = {
     all: ["users"] as const,
     list: (params?: unknown) => ["users", "list", params ?? {}] as const,
   },
+  addresses: {
+    all: ["addresses"] as const,
+    list: (params?: unknown) => ["addresses", "list", params ?? {}] as const,
+  },
   households: {
     all: ["households"] as const,
     list: (params?: unknown) => ["households", "list", params ?? {}] as const,
@@ -123,5 +127,20 @@ export const queryKeys = {
     all: ["carbon-ledger"] as const,
     list: (params?: unknown) => ["carbon-ledger", "list", params ?? {}] as const,
     detail: (id: string) => ["carbon-ledger", "detail", id] as const,
+  },
+  carbonEvents: {
+    all: ["carbon-events"] as const,
+    list: (params?: unknown) => ["carbon-events", "list", params ?? {}] as const,
+  },
+  carbonVerifications: {
+    all: ["carbon-verifications"] as const,
+    list: (params?: unknown) => ["carbon-verifications", "list", params ?? {}] as const,
+  },
+  audit: {
+    all: ["audit"] as const,
+    batchExport: (id: string) => ["audit", "batch-export", id] as const,
+    generatorExport: (id: string) => ["audit", "generator-export", id] as const,
+    carbonExport: (id: string) => ["audit", "carbon-export", id] as const,
+    history: ["audit", "history"] as const,
   },
 };

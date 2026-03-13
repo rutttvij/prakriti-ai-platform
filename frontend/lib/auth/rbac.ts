@@ -106,6 +106,54 @@ const ROUTE_ACCESS_RULES: RouteAccessRule[] = [
     prefix: "/reports",
     roles: ["SUPER_ADMIN", "CITY_ADMIN", "WARD_OFFICER", "SANITATION_SUPERVISOR", "PROCESSOR", "AUDITOR"],
   },
+  {
+    prefix: "/maps/routes",
+    roles: ["SUPER_ADMIN", "CITY_ADMIN", "WARD_OFFICER", "SANITATION_SUPERVISOR"],
+  },
+  {
+    prefix: "/maps/sources",
+    roles: ["SUPER_ADMIN", "CITY_ADMIN", "WARD_OFFICER", "SANITATION_SUPERVISOR"],
+  },
+  {
+    prefix: "/maps/facilities",
+    roles: ["SUPER_ADMIN", "CITY_ADMIN", "WARD_OFFICER", "PROCESSOR"],
+  },
+  {
+    prefix: "/alerts",
+    roles: ["SUPER_ADMIN", "CITY_ADMIN", "WARD_OFFICER", "SANITATION_SUPERVISOR", "PROCESSOR", "AUDITOR"],
+  },
+  {
+    prefix: "/exceptions",
+    roles: ["SUPER_ADMIN", "CITY_ADMIN", "WARD_OFFICER", "SANITATION_SUPERVISOR", "PROCESSOR", "AUDITOR"],
+  },
+  {
+    prefix: "/notifications",
+    roles: ["SUPER_ADMIN", "CITY_ADMIN", "WARD_OFFICER", "SANITATION_SUPERVISOR", "PROCESSOR", "AUDITOR", "BULK_GENERATOR"],
+  },
+  {
+    prefix: "/audit/export/batch",
+    roles: ["SUPER_ADMIN", "CITY_ADMIN", "WARD_OFFICER", "AUDITOR"],
+  },
+  {
+    prefix: "/audit/export/generator",
+    roles: ["SUPER_ADMIN", "CITY_ADMIN", "WARD_OFFICER", "AUDITOR", "BULK_GENERATOR"],
+  },
+  {
+    prefix: "/audit/export/carbon",
+    roles: ["SUPER_ADMIN", "CITY_ADMIN", "WARD_OFFICER", "AUDITOR", "PROCESSOR"],
+  },
+  {
+    prefix: "/audit/history",
+    roles: ["SUPER_ADMIN", "CITY_ADMIN", "WARD_OFFICER", "AUDITOR", "PROCESSOR", "BULK_GENERATOR"],
+  },
+  {
+    prefix: "/audit/export",
+    roles: ["SUPER_ADMIN", "CITY_ADMIN", "WARD_OFFICER", "AUDITOR", "PROCESSOR", "BULK_GENERATOR"],
+  },
+  {
+    prefix: "/audit",
+    roles: ["SUPER_ADMIN", "CITY_ADMIN", "WARD_OFFICER", "AUDITOR", "PROCESSOR", "BULK_GENERATOR"],
+  },
   { prefix: "/worker", roles: ["WORKER"] },
 ];
 

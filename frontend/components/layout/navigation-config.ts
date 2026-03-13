@@ -51,4 +51,28 @@ export const NAV_SECTIONS: NavigationSection[] = [
       { title: "Reports Hub", href: "/reports", icon: "BarChart3", roleCodes: ["SUPER_ADMIN", "CITY_ADMIN", "WARD_OFFICER", "SANITATION_SUPERVISOR", "PROCESSOR", "AUDITOR"] },
     ],
   },
+  {
+    title: "Maps",
+    items: [
+      { title: "Route Maps", href: "/maps/routes", icon: "Map", roleCodes: ["SUPER_ADMIN", "CITY_ADMIN", "WARD_OFFICER", "SANITATION_SUPERVISOR"] },
+      { title: "Source Maps", href: "/maps/sources", icon: "MapPinned", roleCodes: ["SUPER_ADMIN", "CITY_ADMIN", "WARD_OFFICER", "SANITATION_SUPERVISOR"] },
+      { title: "Facility Maps", href: "/maps/facilities", icon: "Map", roleCodes: ["SUPER_ADMIN", "CITY_ADMIN", "WARD_OFFICER", "PROCESSOR"] },
+    ],
+  },
+  {
+    title: "Monitoring",
+    items: [
+      { title: "Alerts", href: "/alerts", icon: "AlertTriangle", roleCodes: ["SUPER_ADMIN", "CITY_ADMIN", "WARD_OFFICER", "SANITATION_SUPERVISOR", "PROCESSOR", "AUDITOR"] },
+      { title: "Exceptions", href: "/exceptions", icon: "AlertTriangle", roleCodes: ["SUPER_ADMIN", "CITY_ADMIN", "WARD_OFFICER", "SANITATION_SUPERVISOR", "PROCESSOR", "AUDITOR"] },
+      { title: "Notifications", href: "/notifications", icon: "Bell", roleCodes: ["SUPER_ADMIN", "CITY_ADMIN", "WARD_OFFICER", "SANITATION_SUPERVISOR", "PROCESSOR", "AUDITOR", "BULK_GENERATOR"] },
+    ],
+  },
+  {
+    title: "Audit",
+    items: [
+      { title: "Audit Center", href: "/audit", icon: "ReceiptText", roleCodes: ["SUPER_ADMIN", "CITY_ADMIN", "WARD_OFFICER", "AUDITOR", "PROCESSOR", "BULK_GENERATOR"] },
+      { title: "Audit Exports", href: "/audit/export", icon: "ReceiptText", roleCodes: ["SUPER_ADMIN", "CITY_ADMIN", "WARD_OFFICER", "AUDITOR", "PROCESSOR", "BULK_GENERATOR"] },
+      { title: "Export History", href: "/audit/history", icon: "ReceiptText", roleCodes: ["SUPER_ADMIN", "CITY_ADMIN", "WARD_OFFICER", "AUDITOR", "PROCESSOR", "BULK_GENERATOR"] },
+    ],
+  },
 ];

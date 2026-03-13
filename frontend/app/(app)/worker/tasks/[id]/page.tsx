@@ -4,8 +4,11 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { QrCode } from "lucide-react";
 import { toast } from "sonner";
 
+import { QRCameraScanner } from "@/components/scanner/qr-camera-scanner";
+import { ScanResultAlert, type ScanUiState } from "@/components/scanner/scan-result-alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -13,9 +16,20 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { PageHeader } from "@/components/ui-extensions/page-header";
 import { StatusBadge } from "@/components/ui-extensions/status-badge";
-import { PICKUP_EVENT_TYPES, WASTE_CATEGORIES } from "@/lib/constants";
 import { getErrorMessage } from "@/lib/api/query-utils";
-import { completePickupTask, createPickupLog, getPickupTask, listPickupLogs, listWorkers, missPickupTask, startPickupTask } from "@/lib/api/services";
+import {
+  completePickupTask,
+  createPickupLog,
+  getBulkGenerator,
+  getHousehold,
+  getPickupTask,
+  listPickupLogs,
+  listWorkers,
+  missPickupTask,
+  startPickupTask,
+} from "@/lib/api/services";
+import { PICKUP_EVENT_TYPES, WASTE_CATEGORIES } from "@/lib/constants";
+import { verifyTaskSourceScan } from "@/lib/worker/scan-verification";
 import { formatDate, formatDateTime, formatNumber } from "@/lib/utils";
 import { queryKeys } from "@/types/query-keys";
 
@@ -29,10 +43,27 @@ export default function WorkerTaskDetailPage() {
   const [notes, setNotes] = useState("");
   const [photoUrl, setPhotoUrl] = useState("");
   const [missNotes, setMissNotes] = useState("");
+  const [scanUiState, setScanUiState] = useState<ScanUiState>("IDLE");
+  const [scanMessage, setScanMessage] = useState<string | undefined>();
+  const [isScannerOpen, setIsScannerOpen] = useState(false);
+  const [isSourceVerified, setIsSourceVerified] = useState(false);
+  const [scannedCodeValue, setScannedCodeValue] = useState<string | null>(null);
 
   const taskQuery = useQuery({ queryKey: queryKeys.pickupTasks.detail(id), queryFn: () => getPickupTask(id) });
   const logsQuery = useQuery({ queryKey: queryKeys.pickupLogs.list({ pickup_task_id: id }), queryFn: () => listPickupLogs({ pickup_task_id: id }) });
   const workerQuery = useQuery({ queryKey: queryKeys.workers.list(), queryFn: () => listWorkers() });
+
+  const householdQuery = useQuery({
+    queryKey: queryKeys.households.detail(taskQuery.data?.household_id ?? "none"),
+    queryFn: () => getHousehold(taskQuery.data!.household_id!),
+    enabled: Boolean(taskQuery.data?.household_id),
+  });
+
+  const bulkGeneratorQuery = useQuery({
+    queryKey: queryKeys.bulkGenerators.detail(taskQuery.data?.bulk_generator_id ?? "none"),
+    queryFn: () => getBulkGenerator(taskQuery.data!.bulk_generator_id!),
+    enabled: Boolean(taskQuery.data?.bulk_generator_id),
+  });
 
   const workerProfileId = workerQuery.data?.[0]?.id;
 
@@ -76,21 +107,16 @@ export default function WorkerTaskDetailPage() {
     onError: (error) => toast.error(getErrorMessage(error)),
   });
 
-  const qrMutation = useMutation({
-    mutationFn: async () => {
-      if (!workerProfileId) throw new Error("Worker profile not found");
+  const scanLogMutation = useMutation({
+    mutationFn: async (message: string) => {
+      if (!workerProfileId) return;
       return createPickupLog({
         pickup_task_id: id,
         worker_profile_id: workerProfileId,
         event_type: PICKUP_EVENT_TYPES.includes("NOTE_ADDED") ? "NOTE_ADDED" : "TASK_STARTED",
-        notes: "QR scanned (placeholder)",
+        notes: message,
       });
     },
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: queryKeys.pickupLogs.all });
-      toast.success("QR scan recorded");
-    },
-    onError: (error) => toast.error(getErrorMessage(error)),
   });
 
   const canStart = taskQuery.data?.pickup_status === "PENDING";
@@ -98,6 +124,63 @@ export default function WorkerTaskDetailPage() {
   const canMiss = taskQuery.data?.pickup_status !== "COMPLETED" && taskQuery.data?.pickup_status !== "MISSED";
 
   const timeline = useMemo(() => logsQuery.data ?? [], [logsQuery.data]);
+
+  async function handleDetectedScan(value: string) {
+    if (!taskQuery.data) return;
+
+    const result = await verifyTaskSourceScan(value, {
+      task: taskQuery.data,
+      household: householdQuery.data,
+      bulkGenerator: bulkGeneratorQuery.data,
+    });
+
+    setScannedCodeValue(value);
+
+    if (result.matched) {
+      setIsSourceVerified(true);
+      setScanUiState("SUCCESS");
+      setScanMessage(result.message);
+      setIsScannerOpen(false);
+      toast.success("Source verified");
+      void scanLogMutation.mutate(`QR scan verified: ${value}`);
+      return;
+    }
+
+    setIsSourceVerified(false);
+    setScanUiState("MISMATCH");
+    setScanMessage(result.message);
+    setIsScannerOpen(false);
+    toast.error("Wrong source scanned");
+    void scanLogMutation.mutate(`QR scan mismatch: ${value}`);
+  }
+
+  function handleOpenScanner() {
+    setScanUiState("IDLE");
+    setScanMessage(undefined);
+    setIsScannerOpen(true);
+  }
+
+  function handleScannerError(payload: { code: "PERMISSION_DENIED" | "NOT_FOUND" | "CAMERA_ERROR"; message: string }) {
+    setIsScannerOpen(false);
+
+    if (payload.code === "NOT_FOUND") {
+      setIsSourceVerified(false);
+      setScanUiState("NOT_FOUND");
+      setScanMessage(payload.message);
+      return;
+    }
+
+    setIsSourceVerified(false);
+    setScanUiState(payload.code === "PERMISSION_DENIED" ? "CAMERA_DENIED" : "CAMERA_ERROR");
+    setScanMessage(payload.message);
+  }
+
+  function handleCancelScanner() {
+    setIsScannerOpen(false);
+    setIsSourceVerified(false);
+    setScanUiState("CANCELLED");
+    setScanMessage("Scan cancelled before verification.");
+  }
 
   return (
     <div className="space-y-4">
@@ -111,16 +194,41 @@ export default function WorkerTaskDetailPage() {
               <p><span className="text-slate-500">Source:</span> {taskQuery.data.source_type}</p>
               <p><span className="text-slate-500">Household ID:</span> {taskQuery.data.household_id ?? "-"}</p>
               <p><span className="text-slate-500">Bulk Generator ID:</span> {taskQuery.data.bulk_generator_id ?? "-"}</p>
+              <p><span className="text-slate-500">Source Verification:</span> {isSourceVerified ? <span className="font-semibold text-emerald-700">Verified</span> : <span className="font-semibold text-amber-700">Pending</span>}</p>
               <p><span className="text-slate-500">Scheduled:</span> {formatDate(taskQuery.data.scheduled_date)}</p>
               <p><span className="text-slate-500">Expected Weight:</span> {formatNumber(taskQuery.data.expected_weight_kg)} kg</p>
             </CardContent>
           </Card>
 
           <Card>
-            <CardHeader><CardTitle className="text-base">QR Scan</CardTitle></CardHeader>
+            <CardHeader><CardTitle className="text-base">QR Scan Verification</CardTitle></CardHeader>
             <CardContent className="space-y-3">
-              <p className="text-sm text-slate-600">Placeholder scanner UI. Use this button to simulate QR tag scan.</p>
-              <Button className="h-12 w-full text-base" onClick={() => qrMutation.mutate()} disabled={qrMutation.isPending}>Simulate QR Scan</Button>
+              <p className="text-sm text-slate-600">Scan the source QR tag to verify this task before completion.</p>
+
+              <ScanResultAlert state={scanUiState} message={scanMessage} />
+
+              {scannedCodeValue ? (
+                <p className="rounded-md bg-slate-50 px-3 py-2 text-xs text-slate-600 break-all">
+                  Last scanned value: {scannedCodeValue}
+                </p>
+              ) : null}
+
+              {isScannerOpen ? (
+                <QRCameraScanner onDetected={handleDetectedScan} onError={handleScannerError} onCancel={handleCancelScanner} />
+              ) : (
+                <div className="space-y-2">
+                  <Button className="h-12 w-full text-base" onClick={handleOpenScanner}>
+                    <QrCode className="h-5 w-5" />
+                    {scanUiState === "IDLE" ? "Open QR Scanner" : "Retry Scan"}
+                  </Button>
+                  {(householdQuery.isLoading || bulkGeneratorQuery.isLoading) ? (
+                    <p className="text-xs text-slate-500">Loading source context for stronger QR matching...</p>
+                  ) : null}
+                  {(householdQuery.isError || bulkGeneratorQuery.isError) ? (
+                    <p className="text-xs text-amber-700">Source detail fetch failed. Validation will use task-level source identifiers only.</p>
+                  ) : null}
+                </div>
+              )}
             </CardContent>
           </Card>
 
@@ -146,7 +254,8 @@ export default function WorkerTaskDetailPage() {
                   <Label>Proof Photo URL</Label>
                   <Input className="h-11" value={photoUrl} onChange={(event) => setPhotoUrl(event.target.value)} placeholder="https://..." />
                 </div>
-                <Button className="h-12 w-full text-base" onClick={() => completeMutation.mutate()} disabled={!canComplete || completeMutation.isPending}>Complete Task</Button>
+                {!isSourceVerified && canComplete ? <p className="text-xs text-red-700">Complete is locked until source QR verification succeeds.</p> : null}
+                <Button className="h-12 w-full text-base" onClick={() => completeMutation.mutate()} disabled={!canComplete || !isSourceVerified || completeMutation.isPending}>Complete Task</Button>
               </div>
 
               <div className="space-y-2 rounded-md border border-red-200 p-3">

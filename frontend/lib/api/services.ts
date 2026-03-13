@@ -15,8 +15,15 @@ import type {
   WorkerReportPage,
 } from "@/types/reporting";
 import type {
+  BatchLifecycleAuditExport,
+  BulkGeneratorLifecycleAuditExport,
+  CarbonEventLifecycleAuditExport,
+} from "@/types/audit";
+import type {
   Batch,
   BulkGenerator,
+  CarbonEvent,
+  CarbonVerification,
   CarbonLedgerEntry,
   City,
   CreateBatchInput,
@@ -40,6 +47,7 @@ import type {
   CreateWardInput,
   CreateWorkerInput,
   CreateZoneInput,
+  Address,
   EnvironmentalSummary,
   Facility,
   FacilityReceipt,
@@ -140,6 +148,11 @@ export async function listUsers(params?: QueryParams): Promise<UserListItem[]> {
 
 export async function createUser(payload: CreateUserInput): Promise<UserListItem> {
   const { data } = await apiClient.post<UserListItem>("/users", payload);
+  return data;
+}
+
+export async function listAddresses(params?: QueryParams): Promise<Address[]> {
+  const { data } = await apiClient.get<Address[]>("/addresses", { params: withQuery(params) });
   return data;
 }
 
@@ -417,6 +430,31 @@ export async function listCarbonLedger(params?: QueryParams): Promise<CarbonLedg
 
 export async function getCarbonLedgerEntry(id: string): Promise<CarbonLedgerEntry> {
   const { data } = await apiClient.get<CarbonLedgerEntry>(`/carbon-ledger/${id}`);
+  return data;
+}
+
+export async function listCarbonEvents(params?: QueryParams): Promise<CarbonEvent[]> {
+  const { data } = await apiClient.get<CarbonEvent[]>("/carbon-events", { params: withQuery(params) });
+  return data;
+}
+
+export async function listCarbonVerifications(params?: QueryParams): Promise<CarbonVerification[]> {
+  const { data } = await apiClient.get<CarbonVerification[]>("/carbon-verifications", { params: withQuery(params) });
+  return data;
+}
+
+export async function exportAuditBatchLifecycle(batchId: string): Promise<BatchLifecycleAuditExport> {
+  const { data } = await apiClient.get<BatchLifecycleAuditExport>(`/audit/export/batch/${batchId}`);
+  return data;
+}
+
+export async function exportAuditBulkGeneratorLifecycle(generatorId: string): Promise<BulkGeneratorLifecycleAuditExport> {
+  const { data } = await apiClient.get<BulkGeneratorLifecycleAuditExport>(`/audit/export/bulk-generator/${generatorId}`);
+  return data;
+}
+
+export async function exportAuditCarbonEventLifecycle(eventId: string): Promise<CarbonEventLifecycleAuditExport> {
+  const { data } = await apiClient.get<CarbonEventLifecycleAuditExport>(`/audit/export/carbon-event/${eventId}`);
   return data;
 }
 

@@ -73,6 +73,23 @@ export interface CreateZoneInput {
   is_active: boolean;
 }
 
+export interface Address {
+  id: Uuid;
+  address_line_1: string;
+  address_line_2: string | null;
+  landmark: string | null;
+  area: string;
+  city_name: string;
+  state: string;
+  country: string;
+  postal_code: string;
+  latitude: string | null;
+  longitude: string | null;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface Household {
   id: Uuid;
   organization_id: Uuid | null;
@@ -376,6 +393,47 @@ export interface CarbonLedgerEntry {
   recorded_at: string;
   verification_status: string;
   remarks: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CarbonEvent {
+  id: Uuid;
+  carbon_project_id: Uuid | null;
+  event_code: string;
+  source_entity_type: string;
+  source_entity_id: Uuid | null;
+  batch_id: Uuid | null;
+  facility_id: Uuid | null;
+  processing_record_id: Uuid | null;
+  landfill_record_id: Uuid | null;
+  recovery_certificate_id: Uuid | null;
+  event_type: string;
+  waste_type: string;
+  quantity_kg: number;
+  factor_id: Uuid | null;
+  factor_value: number | null;
+  gross_emission_kgco2e: number | null;
+  avoided_emission_kgco2e: number | null;
+  net_emission_kgco2e: number | null;
+  event_date: string;
+  methodology_snapshot: string | null;
+  calculation_status: string;
+  notes: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CarbonVerification {
+  id: Uuid;
+  carbon_event_id: Uuid | null;
+  ledger_entry_id: Uuid | null;
+  verified_by_user_id: Uuid | null;
+  verification_status: string;
+  verified_at: string | null;
+  comments: string | null;
+  evidence_document_url: string | null;
+  discrepancy_notes: string | null;
   created_at: string;
   updated_at: string;
 }
