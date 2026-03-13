@@ -1,0 +1,16 @@
+.DS_Store
+.env
+.env.*
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+venv/
+node_modules/
+.next/
+dist/
+build/
+coverage/
+.idea/
+.vscode/
+alembic.ini.bak
