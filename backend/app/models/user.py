@@ -42,3 +42,8 @@ class User(UUIDPrimaryKeyMixin, TimestampMixin, AuditMixin, ActiveMixin, Base):
     ward = relationship("Ward", back_populates="users")
     zone = relationship("Zone", back_populates="users")
     user_roles = relationship("UserRole", back_populates="user", cascade="all, delete-orphan", lazy="selectin")
+    worker_profile = relationship("WorkerProfile", back_populates="user", uselist=False)
+    supervised_shifts = relationship("Shift", back_populates="supervisor_user")
+    facility_receipts_received = relationship("FacilityReceipt", back_populates="received_by_user")
+    recovery_certificates_issued = relationship("RecoveryCertificate", back_populates="issued_by_user")
+    carbon_verifications = relationship("CarbonVerification", back_populates="verified_by_user")

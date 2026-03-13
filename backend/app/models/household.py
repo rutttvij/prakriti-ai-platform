@@ -53,3 +53,5 @@ class Household(UUIDPrimaryKeyMixin, TimestampMixin, AuditMixin, ActiveMixin, Ba
     zone = relationship("Zone", back_populates="households")
     address = relationship("Address", back_populates="households")
     qr_tag = relationship("QRCodeTag", back_populates="household")
+    route_stops = relationship("RouteStop", back_populates="household")
+    pickup_tasks = relationship("PickupTask", back_populates="household")

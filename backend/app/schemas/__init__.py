@@ -1,17 +1,91 @@
 from app.schemas.address import AddressCreate, AddressRead, AddressUpdate
+from app.schemas.carbon_event import CarbonEventCreate, CarbonEventListItem, CarbonEventRead
+from app.schemas.carbon_ledger_entry import CarbonLedgerEntryCreate, CarbonLedgerEntryListItem, CarbonLedgerEntryRead
+from app.schemas.carbon_project import CarbonProjectCreate, CarbonProjectListItem, CarbonProjectRead
+from app.schemas.carbon_verification import CarbonVerificationCreate, CarbonVerificationListItem, CarbonVerificationRead
+from app.schemas.collected_batch import CollectedBatchCreate, CollectedBatchListItem, CollectedBatchRead
 from app.schemas.bulk_generator import (
     BulkWasteGeneratorCreate,
     BulkWasteGeneratorListItem,
     BulkWasteGeneratorRead,
 )
+from app.schemas.emission_factor import EmissionFactorCreate, EmissionFactorListItem, EmissionFactorRead
+from app.schemas.environmental_summary import (
+    EnvironmentalSummaryGenerateRequest,
+    EnvironmentalSummaryListItem,
+    EnvironmentalSummaryRead,
+)
+from app.schemas.facility_receipt import FacilityReceiptCreate, FacilityReceiptListItem, FacilityReceiptRead
+from app.schemas.landfill_record import LandfillRecordCreate, LandfillRecordListItem, LandfillRecordRead
+from app.schemas.pickup_log import PickupLogCreate, PickupLogListItem, PickupLogRead
+from app.schemas.pickup_task import (
+    PickupTaskActionResponse,
+    PickupTaskCompleteRequest,
+    PickupTaskCreate,
+    PickupTaskListItem,
+    PickupTaskMissRequest,
+    PickupTaskRead,
+    PickupTaskStartRequest,
+)
+from app.schemas.processing_facility import ProcessingFacilityCreate, ProcessingFacilityListItem, ProcessingFacilityRead
+from app.schemas.processing_record import ProcessingRecordCreate, ProcessingRecordListItem, ProcessingRecordRead
+from app.schemas.recovery_certificate import RecoveryCertificateCreate, RecoveryCertificateListItem, RecoveryCertificateRead
+from app.schemas.reporting import (
+    BatchLifecycleAuditExport,
+    BulkGeneratorComplianceSummaryResponse,
+    BulkGeneratorLifecycleAuditExport,
+    BulkGeneratorProfileReportResponse,
+    BulkGeneratorReportPage,
+    BulkGeneratorReportRow,
+    BulkGeneratorReportSummary,
+    CarbonEventLifecycleAuditExport,
+    CarbonLedgerReportPage,
+    CarbonLedgerReportRow,
+    CarbonLedgerReportSummary,
+    CityOverviewResponse,
+    CityWardComparisonResponse,
+    DashboardMetricBundle,
+    EnvironmentalSummaryReportPage,
+    EnvironmentalSummaryReportRow,
+    EnvironmentalSummaryReportSummary,
+    FacilityReportPage,
+    FacilityReportRow,
+    FacilityReportSummary,
+    PickupReportPage,
+    PickupReportRow,
+    PickupReportSummary,
+    ReportPageMeta,
+    RouteReportPage,
+    RouteReportRow,
+    RouteReportSummary,
+    TransferReportPage,
+    TransferReportRow,
+    TransferReportSummary,
+    WardComparisonRow,
+    WardOverviewResponse,
+    WorkerReportPage,
+    WorkerReportRow,
+    WorkerReportSummary,
+)
+from app.schemas.route import RouteCreate, RouteListItem, RouteRead
+from app.schemas.route_stop import RouteStopCreate, RouteStopListItem, RouteStopRead
+from app.schemas.shift import ShiftCreate, ShiftListItem, ShiftRead
 from app.schemas.city import CityCreate, CityRead
 from app.schemas.household import HouseholdCreate, HouseholdListItem, HouseholdRead
 from app.schemas.organization import OrganizationCreate, OrganizationRead
 from app.schemas.qr_tag import QRTagAssignRequest, QRTagCreate, QRTagRead
 from app.schemas.role import RoleRead
 from app.schemas.token import Token, TokenPayload
+from app.schemas.transfer_record import (
+    TransferReceiveRequest,
+    TransferRecordCreate,
+    TransferRecordListItem,
+    TransferRecordRead,
+)
 from app.schemas.user import UserCreate, UserRead
+from app.schemas.vehicle import VehicleCreate, VehicleListItem, VehicleRead
 from app.schemas.ward import WardCreate, WardRead
+from app.schemas.worker_profile import WorkerProfileCreate, WorkerProfileListItem, WorkerProfileRead
 from app.schemas.zone import ZoneCreate, ZoneRead
 
 __all__ = [
@@ -29,6 +103,106 @@ __all__ = [
     "BulkWasteGeneratorCreate",
     "BulkWasteGeneratorRead",
     "BulkWasteGeneratorListItem",
+    "EmissionFactorCreate",
+    "EmissionFactorRead",
+    "EmissionFactorListItem",
+    "CarbonProjectCreate",
+    "CarbonProjectRead",
+    "CarbonProjectListItem",
+    "CarbonEventCreate",
+    "CarbonEventRead",
+    "CarbonEventListItem",
+    "CarbonLedgerEntryCreate",
+    "CarbonLedgerEntryRead",
+    "CarbonLedgerEntryListItem",
+    "CarbonVerificationCreate",
+    "CarbonVerificationRead",
+    "CarbonVerificationListItem",
+    "EnvironmentalSummaryGenerateRequest",
+    "EnvironmentalSummaryRead",
+    "EnvironmentalSummaryListItem",
+    "ProcessingFacilityCreate",
+    "ProcessingFacilityRead",
+    "ProcessingFacilityListItem",
+    "CollectedBatchCreate",
+    "CollectedBatchRead",
+    "CollectedBatchListItem",
+    "TransferRecordCreate",
+    "TransferRecordRead",
+    "TransferRecordListItem",
+    "TransferReceiveRequest",
+    "FacilityReceiptCreate",
+    "FacilityReceiptRead",
+    "FacilityReceiptListItem",
+    "ProcessingRecordCreate",
+    "ProcessingRecordRead",
+    "ProcessingRecordListItem",
+    "LandfillRecordCreate",
+    "LandfillRecordRead",
+    "LandfillRecordListItem",
+    "RecoveryCertificateCreate",
+    "RecoveryCertificateRead",
+    "RecoveryCertificateListItem",
+    "ReportPageMeta",
+    "DashboardMetricBundle",
+    "CityOverviewResponse",
+    "WardOverviewResponse",
+    "WardComparisonRow",
+    "CityWardComparisonResponse",
+    "PickupReportRow",
+    "PickupReportSummary",
+    "PickupReportPage",
+    "WorkerReportRow",
+    "WorkerReportSummary",
+    "WorkerReportPage",
+    "RouteReportRow",
+    "RouteReportSummary",
+    "RouteReportPage",
+    "FacilityReportRow",
+    "FacilityReportSummary",
+    "FacilityReportPage",
+    "TransferReportRow",
+    "TransferReportSummary",
+    "TransferReportPage",
+    "BulkGeneratorReportRow",
+    "BulkGeneratorReportSummary",
+    "BulkGeneratorReportPage",
+    "EnvironmentalSummaryReportRow",
+    "EnvironmentalSummaryReportSummary",
+    "EnvironmentalSummaryReportPage",
+    "CarbonLedgerReportRow",
+    "CarbonLedgerReportSummary",
+    "CarbonLedgerReportPage",
+    "BulkGeneratorProfileReportResponse",
+    "BulkGeneratorComplianceSummaryResponse",
+    "BatchLifecycleAuditExport",
+    "BulkGeneratorLifecycleAuditExport",
+    "CarbonEventLifecycleAuditExport",
+    "WorkerProfileCreate",
+    "WorkerProfileRead",
+    "WorkerProfileListItem",
+    "VehicleCreate",
+    "VehicleRead",
+    "VehicleListItem",
+    "ShiftCreate",
+    "ShiftRead",
+    "ShiftListItem",
+    "RouteCreate",
+    "RouteRead",
+    "RouteListItem",
+    "RouteStopCreate",
+    "RouteStopRead",
+    "RouteStopListItem",
+    "PickupTaskCreate",
+    "PickupTaskRead",
+    "PickupTaskListItem",
+    "PickupTaskStartRequest",
+    "PickupTaskCompleteRequest",
+    "PickupTaskMissRequest",
+    "PickupTaskActionResponse",
+    "PickupLogCreate",
+    "PickupLogRead",
+    "PickupLogListItem",
     "UserCreate",
     "UserRead",
     "RoleRead",

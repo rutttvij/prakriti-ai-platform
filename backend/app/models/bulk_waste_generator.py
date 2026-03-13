@@ -60,3 +60,6 @@ class BulkWasteGenerator(UUIDPrimaryKeyMixin, TimestampMixin, AuditMixin, Active
     zone = relationship("Zone", back_populates="bulk_generators")
     address = relationship("Address", back_populates="bulk_generators")
     qr_tag = relationship("QRCodeTag", back_populates="bulk_generator")
+    route_stops = relationship("RouteStop", back_populates="bulk_generator")
+    pickup_tasks = relationship("PickupTask", back_populates="bulk_generator")
+    recovery_certificates = relationship("RecoveryCertificate", back_populates="bulk_generator")

@@ -1,36 +1,100 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Prakriti.AI Frontend
 
-## Getting Started
+Enterprise frontend foundation for municipal waste operations and carbon intelligence.
 
-First, run the development server:
+## Stack
+- Next.js App Router (TypeScript)
+- Tailwind CSS v4
+- shadcn-style component system
+- TanStack Query
+- Zustand for auth state
 
+## Setup
 ```bash
+cd frontend
+npm install
+cp .env.example .env.local
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open `http://localhost:3000`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Environment Variables
+- `NEXT_PUBLIC_API_BASE_URL`:
+  - Backend base URL (no trailing slash required)
+  - Example: `http://localhost:8000`
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Auth Flow
+- Login uses `POST /auth/login` with `application/x-www-form-urlencoded` body:
+  - `username` = email
+  - `password` = password
+- Access token is stored in localStorage via Zustand auth store.
+- A lightweight cookie (`pa_token=1`) is mirrored for route gating in `proxy.ts`.
+- Current user is fetched via `GET /auth/me`.
+- Unauthorized API responses trigger logout and redirect to `/login`.
 
-## Learn More
+## Route Protection
+- `proxy.ts` protects all application routes.
+- Unauthenticated requests to protected routes are redirected to `/login`.
+- Authenticated requests to `/login` are redirected to `/dashboard`.
 
-To learn more about Next.js, take a look at the following resources:
+## Pages
+### Connected to Backend List APIs
+- `/organizations` -> `GET /organizations`
+- `/cities` -> `GET /cities`
+- `/wards` -> `GET /wards`
+- `/zones` -> `GET /zones`
+- `/users` -> `GET /users`
+- `/households` -> `GET /households`
+- `/bulk-generators` -> `GET /bulk-generators`
+- `/workers` -> `GET /workers`
+- `/vehicles` -> `GET /vehicles`
+- `/routes` -> `GET /routes`
+- `/pickup-tasks` -> `GET /pickup-tasks`
+- `/environmental-summaries` -> `GET /environmental-summaries`
+- `/carbon-ledger` -> `GET /carbon-ledger`
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Scaffold-only in this phase
+- `/dashboard`
+- `/reports`
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Reusable Building Blocks
+- Layout shell: sidebar, top navbar, role-aware nav
+- `PageHeader`
+- `MetricStatCard`
+- `StatusBadge`
+- `FilterBar`
+- `DataTableWrapper`
+- `EmptyState`
+- `LoadingState`
+- `ErrorState`
+- `FormSectionCard`
+- `SimpleDataTable`
 
-## Deploy on Vercel
+## Commands
+```bash
+npm run dev
+npm run lint
+npm run build
+npm run start
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Added Packages
+- `@tanstack/react-query`
+- `zustand`
+- `axios`
+- `zod`
+- `@hookform/resolvers`
+- `react-hook-form`
+- `lucide-react`
+- `clsx`
+- `tailwind-merge`
+- `class-variance-authority`
+- `tailwindcss-animate`
+- `sonner`
+- `@radix-ui/react-slot`
+- `@radix-ui/react-label`
+- `@radix-ui/react-dropdown-menu`
+- `@radix-ui/react-dialog`
+- `@radix-ui/react-separator`
+- `@radix-ui/react-select`

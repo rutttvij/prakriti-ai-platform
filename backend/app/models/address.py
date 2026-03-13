@@ -24,3 +24,4 @@ class Address(UUIDPrimaryKeyMixin, TimestampMixin, AuditMixin, ActiveMixin, Base
 
     households = relationship("Household", back_populates="address")
     bulk_generators = relationship("BulkWasteGenerator", back_populates="address")
+    processing_facilities = relationship("ProcessingFacility", back_populates="address")
