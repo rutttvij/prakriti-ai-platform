@@ -21,6 +21,14 @@ class UserCreate(BaseModel):
     role_codes: list[str] = Field(default_factory=list)
 
 
+class UserSelfUpdate(BaseModel):
+    full_name: str | None = Field(default=None, min_length=2, max_length=200)
+    email: EmailStr | None = None
+    phone: str | None = Field(default=None, max_length=30)
+    current_password: str | None = Field(default=None, min_length=8, max_length=128)
+    new_password: str | None = Field(default=None, min_length=8, max_length=128)
+
+
 class UserRead(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 

@@ -31,6 +31,7 @@ const PROTECTED_PREFIXES = [
   "/exceptions",
   "/notifications",
   "/audit",
+  "/platform-admin",
   "/environmental-summaries",
   "/carbon-ledger",
   "/worker",
@@ -57,5 +58,5 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/login", "/dashboard/:path*", "/organizations/:path*", "/cities/:path*", "/wards/:path*", "/zones/:path*", "/users/:path*", "/households/:path*", "/bulk-generators/:path*", "/workers/:path*", "/vehicles/:path*", "/routes/:path*", "/route-stops/:path*", "/shifts/:path*", "/facilities/:path*", "/pickup-tasks/:path*", "/pickup-logs/:path*", "/batches/:path*", "/transfers/:path*", "/facility-receipts/:path*", "/processing-records/:path*", "/landfill-records/:path*", "/recovery-certificates/:path*", "/reports/:path*", "/maps/:path*", "/alerts/:path*", "/exceptions/:path*", "/notifications/:path*", "/audit/:path*", "/environmental-summaries/:path*", "/carbon-ledger/:path*", "/worker/:path*"],
+  matcher: ["/login", "/dashboard/:path*", "/organizations/:path*", "/cities/:path*", "/wards/:path*", "/zones/:path*", "/users/:path*", "/households/:path*", "/bulk-generators/:path*", "/workers/:path*", "/vehicles/:path*", "/routes/:path*", "/route-stops/:path*", "/shifts/:path*", "/facilities/:path*", "/pickup-tasks/:path*", "/pickup-logs/:path*", "/batches/:path*", "/transfers/:path*", "/facility-receipts/:path*", "/processing-records/:path*", "/landfill-records/:path*", "/recovery-certificates/:path*", "/reports/:path*", "/maps/:path*", "/alerts/:path*", "/exceptions/:path*", "/notifications/:path*", "/audit/:path*", "/platform-admin/:path*", "/environmental-summaries/:path*", "/carbon-ledger/:path*", "/worker/:path*"],
 };

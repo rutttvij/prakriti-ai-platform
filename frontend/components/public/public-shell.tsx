@@ -5,9 +5,9 @@ import { PublicNavbar } from "@/components/public/public-navbar";
 
 export function PublicShell({ children }: { children: ReactNode }) {
   return (
-    <div className="min-h-screen bg-[linear-gradient(180deg,#ffffff_0%,#f0fdf4_55%,#ecfeff_100%)] text-slate-900">
+    <div className="min-h-screen text-[var(--text-on-dark)]">
       <PublicNavbar />
-      <main>{children}</main>
+      <main className="mx-auto w-full max-w-7xl px-4 pt-3 pb-10 md:px-6 md:pt-4 lg:px-8">{children}</main>
       <PublicFooter />
     </div>
   );

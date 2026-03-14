@@ -13,6 +13,18 @@ export const NAV_SECTIONS: NavigationSection[] = [
     ],
   },
   {
+    title: "Platform Admin",
+    items: [
+      { title: "Control Center", href: "/platform-admin", icon: "LayoutDashboard", roleCodes: ["SUPER_ADMIN"] },
+      { title: "Tenants", href: "/platform-admin/tenants", icon: "Building2", roleCodes: ["SUPER_ADMIN"] },
+      { title: "City Onboarding", href: "/platform-admin/city-onboarding", icon: "MapPinned", roleCodes: ["SUPER_ADMIN"] },
+      { title: "Subscriptions", href: "/platform-admin/subscriptions", icon: "Scale", roleCodes: ["SUPER_ADMIN"] },
+      { title: "System Health", href: "/platform-admin/system-health", icon: "ShieldCheck", roleCodes: ["SUPER_ADMIN"] },
+      { title: "Audit Logs", href: "/platform-admin/audit-logs", icon: "ReceiptText", roleCodes: ["SUPER_ADMIN"] },
+      { title: "Feature Flags", href: "/platform-admin/feature-flags", icon: "ClipboardCheck", roleCodes: ["SUPER_ADMIN"] },
+    ],
+  },
+  {
     title: "Operations",
     items: [
       { title: "Households", href: "/households", icon: "House", roleCodes: ["SUPER_ADMIN", "CITY_ADMIN", "WARD_OFFICER", "SANITATION_SUPERVISOR"] },

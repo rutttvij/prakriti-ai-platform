@@ -143,4 +143,14 @@ export const queryKeys = {
     carbonExport: (id: string) => ["audit", "carbon-export", id] as const,
     history: ["audit", "history"] as const,
   },
+  platformAdmin: {
+    all: ["platform-admin"] as const,
+    dashboard: ["platform-admin", "dashboard"] as const,
+    tenants: ["platform-admin", "tenants"] as const,
+    tenantDetail: (id: string) => ["platform-admin", "tenants", id] as const,
+    systemHealth: ["platform-admin", "system-health"] as const,
+    auditLogs: (params?: unknown) => ["platform-admin", "audit-logs", params ?? {}] as const,
+    subscriptions: ["platform-admin", "subscriptions"] as const,
+    featureFlags: ["platform-admin", "feature-flags"] as const,
+  },
 };

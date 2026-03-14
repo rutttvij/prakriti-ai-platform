@@ -6,8 +6,8 @@ interface StatusBadgeProps {
 }
 
 const positive = new Set(["ACTIVE", "COMPLETED", "VERIFIED", "COMPLIANT", "GENERATED"]);
-const warning = new Set(["PENDING", "IN_PROGRESS", "UNDER_REVIEW"]);
-const destructive = new Set(["INACTIVE", "MISSED", "REJECTED", "NON_COMPLIANT", "CANCELLED", "TERMINATED"]);
+const warning = new Set(["PENDING", "IN_PROGRESS", "UNDER_REVIEW", "INACTIVE", "MISSED"]);
+const destructive = new Set(["REJECTED", "NON_COMPLIANT", "CANCELLED", "TERMINATED"]);
 
 export function StatusBadge({ value }: StatusBadgeProps) {
   if (!value) {

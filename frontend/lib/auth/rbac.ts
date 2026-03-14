@@ -154,6 +154,7 @@ const ROUTE_ACCESS_RULES: RouteAccessRule[] = [
     prefix: "/audit",
     roles: ["SUPER_ADMIN", "CITY_ADMIN", "WARD_OFFICER", "AUDITOR", "PROCESSOR", "BULK_GENERATOR"],
   },
+  { prefix: "/platform-admin", roles: ["SUPER_ADMIN"] },
   { prefix: "/worker", roles: ["WORKER"] },
 ];
 

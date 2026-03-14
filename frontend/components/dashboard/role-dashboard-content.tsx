@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 
+import { FormSelectField } from "@/components/forms/form-fields";
 import { ComparisonTableSection } from "@/components/reporting/comparison-table-section";
 import { MetricHighlightCard } from "@/components/reporting/metric-highlight-card";
 import { ReportFilterBar } from "@/components/reporting/report-filter-bar";
@@ -23,6 +24,7 @@ import {
   getPickupReport,
   getTransferReport,
   getWorkerReport,
+  listCities,
   listBatches,
   listFacilityReceipts,
   listPickupTasks,
@@ -37,6 +39,15 @@ import { formatDate, formatNumber } from "@/lib/utils";
 import { useAuthStore } from "@/store/auth-store";
 import { queryKeys } from "@/types/query-keys";
 
+const DEMO_SHORTCUTS = [
+  { title: "View City Dashboard", href: "/dashboard/city-admin", description: "Executive municipal KPIs and trends." },
+  { title: "Open Worker Task Flow", href: "/worker/tasks", description: "Mobile-friendly worker journey and QR flow." },
+  { title: "Open Maps", href: "/maps/routes", description: "Route and source intelligence on map canvas." },
+  { title: "Open Carbon Ledger", href: "/carbon-ledger", description: "Emissions, avoided impact, and verification states." },
+  { title: "Open Audit Export", href: "/audit/export", description: "Download presentation-ready evidence bundles." },
+  { title: "View Public Website", href: "/", description: "Public-facing product narrative and platform positioning." },
+];
+
 function EmptyScopeCard({ message }: { message: string }) {
   return (
     <Card>
@@ -45,10 +56,64 @@ function EmptyScopeCard({ message }: { message: string }) {
   );
 }
 
+function DemoQuickLinksCard() {
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-base">Demo Quick Links</CardTitle>
+      </CardHeader>
+      <CardContent className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+        {DEMO_SHORTCUTS.map((item) => (
+          <Link
+            key={item.href}
+            href={item.href}
+            className="rounded-xl border border-slate-200 px-3 py-3 transition hover:bg-slate-50"
+          >
+            <p className="text-sm font-semibold">{item.title}</p>
+            <p className="mt-1 text-xs text-slate-500">{item.description}</p>
+          </Link>
+        ))}
+      </CardContent>
+    </Card>
+  );
+}
+
+function DemoFlowCard() {
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-base">Recommended Demo Flow</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-2 text-sm text-slate-700">
+        <p>1. City Dashboard KPI overview and ward comparison.</p>
+        <p>2. Worker Task Flow with pickup lifecycle and QR evidence.</p>
+        <p>3. Maps for operational intelligence and route visualization.</p>
+        <p>4. Carbon Ledger and environmental summary outcomes.</p>
+        <p>5. Audit Export Center to present evidence-ready artifacts.</p>
+      </CardContent>
+    </Card>
+  );
+}
+
 function CityAdminDashboard({ roleTitle }: { roleTitle: string }) {
   const user = useAuthStore((state) => state.user);
   const [cityIdInput, setCityIdInput] = useState("");
-  const cityId = cityIdInput || user?.city_id || undefined;
+  const citySelectionValue = cityIdInput || user?.city_id || "";
+  const cityId = citySelectionValue || undefined;
+
+  const citiesQuery = useQuery({
+    queryKey: queryKeys.cities.list(),
+    queryFn: () => listCities(),
+  });
+
+  const cityOptions = useMemo(
+    () =>
+      (citiesQuery.data ?? []).map((city) => ({
+        label: city.name,
+        value: city.id,
+      })),
+    [citiesQuery.data],
+  );
 
   const cityOverview = useQuery({
     queryKey: queryKeys.dashboard.cityOverview({ city_id: cityId }),
@@ -70,18 +135,46 @@ function CityAdminDashboard({ roleTitle }: { roleTitle: string }) {
     queryFn: () => getPickupReport({ city_id: cityId, limit: 10, offset: 0 }),
     enabled: Boolean(cityId),
   });
+  const workerReport = useQuery({
+    queryKey: queryKeys.reports.workers({ city_id: cityId, limit: 8, offset: 0 }),
+    queryFn: () => getWorkerReport({ city_id: cityId, limit: 8, offset: 0 }),
+    enabled: Boolean(cityId),
+  });
+  const transferReport = useQuery({
+    queryKey: queryKeys.reports.transfers({ city_id: cityId, limit: 8, offset: 0 }),
+    queryFn: () => getTransferReport({ city_id: cityId, limit: 8, offset: 0 }),
+    enabled: Boolean(cityId),
+  });
 
   return (
     <div className="space-y-6">
       <PageHeader title={`${roleTitle} Portal`} description="City KPIs, ward comparison, environmental metrics, and operational trends." />
+      <DemoQuickLinksCard />
       <ReportFilterBar onReset={() => setCityIdInput("")}>
-        <Input placeholder="City ID" value={cityIdInput} onChange={(event) => setCityIdInput(event.target.value)} />
+        <FormSelectField
+          label="City"
+          value={citySelectionValue}
+          onChange={setCityIdInput}
+          options={cityOptions}
+          placeholder="Select city"
+        />
       </ReportFilterBar>
 
       {!cityId ? (
-        <EmptyScopeCard message="City scope is required to load city portal metrics. Enter city ID or assign city scope to this user." />
+        <EmptyScopeCard message="City scope is required to load city portal metrics. Select a city name or assign city scope to this user." />
       ) : (
         <>
+          <StatCardGrid
+            items={[
+              { title: "Total Waste Collected", value: `${formatNumber(cityOverview.data?.metrics.total_collected_weight_kg)} kg` },
+              { title: "Landfill Diversion", value: `${formatNumber(cityOverview.data?.metrics.landfill_diversion_percent)}%` },
+              { title: "Carbon Impact (Net)", value: `${formatNumber(cityOverview.data?.metrics.net_emissions_kgco2e)} kgCO2e` },
+              { title: "Active Workers", value: formatNumber(workerReport.data?.summary.active_workers, 0) },
+              { title: "Compliance Coverage", value: `${formatNumber(envReport.data?.summary.total_summaries, 0)} summaries` },
+              { title: "Received Transfers", value: formatNumber(transferReport.data?.summary.received_transfers, 0) },
+            ]}
+          />
+
           <StatCardGrid
             items={[
               { title: "Total Households", value: formatNumber(cityOverview.data?.metrics.total_households, 0) },
@@ -111,6 +204,43 @@ function CityAdminDashboard({ roleTitle }: { roleTitle: string }) {
             <MetricHighlightCard title="Latest Environmental Summaries" value={formatNumber(envReport.data?.summary.total_summaries, 0)} subtitle="Latest 5 rows loaded" />
             <MetricHighlightCard title="Operational Trend" value={formatNumber(pickupReport.data?.summary.completed_tasks, 0)} subtitle="Completed pickups in active report window" />
           </div>
+
+          <div className="grid gap-4 lg:grid-cols-2">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-base">Recent Pickup Activity</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {(pickupReport.data?.rows ?? []).slice(0, 5).map((row) => (
+                  <div key={row.id} className="flex items-center justify-between rounded-lg border border-slate-200 px-3 py-2">
+                    <div>
+                      <p className="text-sm font-medium">{row.id}</p>
+                      <p className="text-xs text-slate-500">{formatDate(row.scheduled_date)} • {row.source_type}</p>
+                    </div>
+                    <StatusBadge value={row.pickup_status} />
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-base">Recent Transfers</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {(transferReport.data?.rows ?? []).slice(0, 5).map((row) => (
+                  <div key={row.transfer_id} className="flex items-center justify-between rounded-lg border border-slate-200 px-3 py-2">
+                    <div>
+                      <p className="text-sm font-medium">{row.transfer_id}</p>
+                      <p className="text-xs text-slate-500">{formatDate(row.dispatched_at)} • {formatNumber(row.dispatched_weight_kg)} kg</p>
+                    </div>
+                    <StatusBadge value={row.transfer_status} />
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          </div>
+
+          <DemoFlowCard />
         </>
       )}
     </div>
@@ -145,6 +275,7 @@ function WardOfficerDashboard() {
   return (
     <div className="space-y-6">
       <PageHeader title="Ward Officer Portal" description="Ward KPIs, pickup completion, worker performance, and facility transfers." />
+      <DemoQuickLinksCard />
       <StatCardGrid
         items={[
           { title: "Ward Pickup Tasks", value: formatNumber(wardOverview.data?.metrics.total_pickup_tasks, 0) },
@@ -175,6 +306,7 @@ function SupervisorDashboard() {
   return (
     <div className="space-y-6">
       <PageHeader title="Supervisor Portal" description="Today's shifts, assigned routes, pickup task board, and worker status." />
+      <DemoQuickLinksCard />
       <StatCardGrid
         items={[
           { title: "Today's Shifts", value: formatNumber(shifts.data?.length, 0) },
@@ -215,6 +347,7 @@ function ProcessorDashboard() {
   return (
     <div className="space-y-6">
       <PageHeader title="Processor Portal" description="Incoming transfers, facility receipts, processing activity, and throughput summary." />
+      <DemoQuickLinksCard />
       <StatCardGrid
         items={[
           { title: "Incoming Transfers", value: formatNumber(transfers.data?.length, 0) },
@@ -235,6 +368,7 @@ function AuditorDashboard() {
   return (
     <div className="space-y-6">
       <PageHeader title="Auditor Portal" description="Carbon ledger overview, verification queue, and audit export access." />
+      <DemoQuickLinksCard />
       <StatCardGrid
         items={[
           { title: "Ledger Entries", value: formatNumber(ledger.data?.summary.total_entries, 0) },
@@ -269,6 +403,7 @@ function BulkGeneratorDashboard() {
   return (
     <div className="space-y-6">
       <PageHeader title="Bulk Generator Portal" description="Pickup history, compliance status, recovery certificates, and environmental impact." />
+      <DemoQuickLinksCard />
       <ReportFilterBar onReset={() => setGeneratorId("")}>
         <Input placeholder="Generator ID" value={generatorId} onChange={(event) => setGeneratorId(event.target.value)} />
       </ReportFilterBar>

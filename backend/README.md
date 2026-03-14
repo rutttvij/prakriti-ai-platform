@@ -1,71 +1,101 @@
-# Prakriti.AI Backend Foundation
+# Backend (FastAPI)
 
-FastAPI backend foundation for multi-tenant municipal operations and carbon intelligence platform.
+## Overview
 
-## Stack
-- FastAPI
-- PostgreSQL
-- SQLAlchemy ORM
-- Alembic
-- Pydantic
-- JWT auth (`python-jose`)
-- Password hashing (`passlib` + bcrypt)
-- `.env` config (`python-dotenv`)
+Backend API for Prakriti.AI municipal operations, traceability, carbon accounting, and audit workflows.
 
-## Environment Variables
-Create `backend/.env` using `backend/.env.example` and set:
-- `DATABASE_URL`
-- `SECRET_KEY`
-- `ACCESS_TOKEN_EXPIRE_MINUTES`
-- `ENVIRONMENT`
-- `PROJECT_NAME`
-- `BOOTSTRAP_ADMIN_NAME`
-- `BOOTSTRAP_ADMIN_EMAIL`
-- `BOOTSTRAP_ADMIN_PASSWORD`
+## Module Structure
 
-## Run Commands
-From `backend/`:
+- `app/api/routes/` - route handlers grouped by domain
+- `app/services/` - business logic and domain validation
+- `app/models/` - SQLAlchemy models
+- `app/schemas/` - Pydantic request/response schemas
+- `app/db/` - database session and seed/bootstrap scripts
+- `migrations/` - Alembic migration environment + versions
+- `scripts/` - utility scripts (`seed_roles`, `load_demo_data`)
+
+## Environment Setup
 
 ```bash
-python -m venv .venv
+cd backend
+python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
+cp .env.example .env
 ```
 
-Create first migration:
+Required variables are documented in `.env.example`.
 
-```bash
-alembic revision --autogenerate -m "initial foundation"
-alembic upgrade head
-```
-
-Run server:
+## Run
 
 ```bash
 uvicorn app.main:app --reload
 ```
 
-Bootstrap initial super admin:
+## Migrations Workflow
+
+Apply all migrations:
+
+```bash
+alembic upgrade head
+```
+
+Create a new migration after model changes:
+
+```bash
+alembic revision --autogenerate -m "describe change"
+```
+
+Rollback one revision:
+
+```bash
+alembic downgrade -1
+```
+
+## Auth and Bootstrap Flow
+
+- `POST /auth/login` returns JWT token
+- `GET /auth/me` returns authenticated profile
+- `PATCH /auth/me` updates self profile (and optional password change)
+- Optional initial admin bootstrap:
 
 ```bash
 python3 -m app.db.bootstrap_admin
 ```
 
-## Role Seeding
-System roles are seeded automatically on startup if `roles` table exists.
+## Seed and Demo Workflow
 
-Manual seed command:
+System roles seed automatically at startup (if tables exist) and can be seeded manually:
 
 ```bash
 python3 scripts/seed_roles.py
 ```
 
-## API Endpoints
-- `GET /health`
-- `POST /auth/login`
-- `GET /auth/me`
-- `POST /organizations`, `GET /organizations`
-- `POST /cities`, `GET /cities`
-- `POST /wards`, `GET /wards`
-- `POST /zones`, `GET /zones`
-- `POST /users`, `GET /users`
+Presentation-ready demo seed:
+
+```bash
+python3 scripts/load_demo_data.py
+```
+
+Safety behavior:
+- Demo seeding is blocked when `ENVIRONMENT=production`.
+
+## API Notes
+
+Representative route groups:
+- Auth: `/auth/*`
+- Registry/admin: `/organizations`, `/cities`, `/wards`, `/zones`, `/users`
+- Operations: `/workers`, `/vehicles`, `/routes`, `/route-stops`, `/shifts`, `/pickup-tasks`, `/pickup-logs`
+- Facilities/lifecycle: `/batches`, `/transfers`, `/facility-receipts`, `/processing-records`, `/landfill-records`, `/recovery-certificates`
+- Carbon/reporting: `/carbon-events`, `/carbon-ledger`, `/environmental-summaries`, `/reports`
+- Platform admin: `/platform-admin/*`
+
+## Useful Checks
+
+```bash
+python3 -m compileall app scripts
+```
+
+For architecture and domain maps, see:
+- `../docs/backend-architecture.md`
+- `../docs/database-overview.md`

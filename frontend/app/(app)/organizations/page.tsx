@@ -10,6 +10,7 @@ import { EntityTable } from "@/components/crud/entity-table";
 import { FieldGrid } from "@/components/crud/field-grid";
 import { RowActions } from "@/components/crud/row-actions";
 import { FormSelectField, FormTextField } from "@/components/forms/form-fields";
+import { Button } from "@/components/ui/button";
 import { FilterBar } from "@/components/ui-extensions/filter-bar";
 import { PageHeader } from "@/components/ui-extensions/page-header";
 import { StatusBadge } from "@/components/ui-extensions/status-badge";
@@ -93,7 +94,15 @@ export default function OrganizationsPage() {
 
   return (
     <div className="space-y-6">
-      <PageHeader title="Organizations" description="Manage municipal organizations." actions={<button className="inline-flex h-10 items-center rounded-md bg-emerald-600 px-4 text-sm font-medium text-white" onClick={openCreate}>Create Organization</button>} />
+      <PageHeader
+        title="Organizations"
+        description="Manage municipal organizations."
+        actions={
+          <Button variant="primary" onClick={openCreate}>
+            Create Organization
+          </Button>
+        }
+      />
 
       <FilterBar onReset={() => setSearch("")}> 
         <Input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search organizations" />

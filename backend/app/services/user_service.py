@@ -4,7 +4,7 @@ from fastapi import HTTPException, status
 from sqlalchemy import Select, select
 from sqlalchemy.orm import Session, selectinload
 
-from app.core.security import get_password_hash
+from app.core.security import get_password_hash, verify_password
 from app.models.city import City
 from app.models.organization import Organization
 from app.models.role import Role
@@ -13,7 +13,7 @@ from app.models.user_role import UserRole
 from app.models.ward import Ward
 from app.models.zone import Zone
 from app.schemas.role import RoleRead
-from app.schemas.user import UserCreate, UserRead
+from app.schemas.user import UserCreate, UserRead, UserSelfUpdate
 from app.services.role_service import assign_role
 
 
@@ -117,4 +117,46 @@ def to_user_read(user: User) -> UserRead:
         created_at=user.created_at,
         updated_at=user.updated_at,
         roles=roles,
+    )
+
+
+def update_current_user_profile(db: Session, current_user: User, payload: UserSelfUpdate) -> User:
+    updates = payload.model_dump(exclude_unset=True)
+    if not updates:
+        return db.scalar(
+            select(User)
+            .where(User.id == current_user.id)
+            .options(selectinload(User.user_roles).selectinload(UserRole.role))
+        )
+
+    current_password = updates.pop("current_password", None)
+    new_password = updates.pop("new_password", None)
+
+    if current_password and not new_password:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="New password is required")
+    if new_password and not current_password:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Current password is required")
+
+    if current_password and new_password:
+        if not verify_password(current_password, current_user.hashed_password):
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Current password is incorrect")
+        current_user.hashed_password = get_password_hash(new_password)
+
+    new_email = updates.get("email")
+    if new_email and new_email != current_user.email:
+        existing = db.scalar(select(User).where(User.email == new_email, User.id != current_user.id))
+        if existing:
+            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Email already registered")
+
+    for field, value in updates.items():
+        setattr(current_user, field, value)
+
+    current_user.updated_by = current_user.id
+    db.add(current_user)
+    db.commit()
+
+    return db.scalar(
+        select(User)
+        .where(User.id == current_user.id)
+        .options(selectinload(User.user_roles).selectinload(UserRole.role))
     )

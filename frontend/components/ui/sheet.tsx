@@ -13,18 +13,18 @@ const SheetClose = DialogPrimitive.Close;
 const SheetPortal = DialogPrimitive.Portal;
 
 function SheetOverlay({ className, ...props }: React.ComponentProps<typeof DialogPrimitive.Overlay>) {
-  return <DialogPrimitive.Overlay className={cn("fixed inset-0 z-50 bg-black/30", className)} {...props} />;
+  return <DialogPrimitive.Overlay className={cn("fixed inset-0 z-50 bg-[rgba(7,19,16,0.56)] backdrop-blur-sm", className)} {...props} />;
 }
 
 const sheetVariants = cva(
-  "fixed z-50 gap-4 bg-white p-6 shadow-lg transition ease-in-out data-[state=open]:duration-500 data-[state=closed]:duration-300",
+  "surface-card-strong fixed z-50 gap-4 p-6 text-ink transition ease-in-out data-[state=open]:duration-500 data-[state=closed]:duration-300",
   {
     variants: {
       side: {
-        top: "inset-x-0 top-0 border-b border-slate-200",
-        bottom: "inset-x-0 bottom-0 border-t border-slate-200",
-        left: "inset-y-0 left-0 h-full w-3/4 border-r border-slate-200 sm:max-w-sm",
-        right: "inset-y-0 right-0 h-full w-3/4 border-l border-slate-200 sm:max-w-sm",
+        top: "inset-x-0 top-0 rounded-t-none border-b",
+        bottom: "inset-x-0 bottom-0 rounded-b-none border-t",
+        left: "inset-y-0 left-0 h-full w-3/4 rounded-l-none border-r sm:max-w-sm",
+        right: "inset-y-0 right-0 h-full w-3/4 rounded-r-none border-l sm:max-w-sm",
       },
     },
     defaultVariants: {
@@ -39,7 +39,7 @@ function SheetContent({ side = "right", className, children, ...props }: React.C
       <SheetOverlay />
       <DialogPrimitive.Content className={cn(sheetVariants({ side }), className)} {...props}>
         {children}
-        <DialogPrimitive.Close className="absolute top-4 right-4 rounded-sm opacity-70 transition-opacity hover:opacity-100">
+        <DialogPrimitive.Close className="absolute top-4 right-4 rounded-full border border-[var(--soft-border)] p-1.5 opacity-80 transition-opacity hover:opacity-100">
           <X className="h-4 w-4" />
           <span className="sr-only">Close</span>
         </DialogPrimitive.Close>
@@ -53,7 +53,7 @@ function SheetHeader({ className, ...props }: React.ComponentProps<"div">) {
 }
 
 function SheetTitle({ className, ...props }: React.ComponentProps<typeof DialogPrimitive.Title>) {
-  return <DialogPrimitive.Title className={cn("text-lg font-semibold text-slate-900", className)} {...props} />;
+  return <DialogPrimitive.Title className={cn("heading-font text-lg font-semibold text-ink", className)} {...props} />;
 }
 
 export { Sheet, SheetTrigger, SheetClose, SheetContent, SheetHeader, SheetTitle };

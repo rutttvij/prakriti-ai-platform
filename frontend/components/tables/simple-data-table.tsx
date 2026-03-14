@@ -9,7 +9,7 @@ interface SimpleDataTableProps<T> {
 
 export function SimpleDataTable<T>({ columns, data }: SimpleDataTableProps<T>) {
   return (
-    <Card>
+    <Card className="surface-card-strong overflow-hidden">
       <CardContent className="p-0">
         <Table>
           <TableHeader>

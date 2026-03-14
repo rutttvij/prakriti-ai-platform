@@ -1,0 +1,44 @@
+services:
+  db:
+    image: postgres:16
+    container_name: prakriti_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: prakriti_ai
+    ports:
+      - "5432:5432"
+    volumes:
+      - prakriti_pgdata:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: ..
+      dockerfile: infrastructure/Dockerfile.backend
+    container_name: prakriti_backend
+    restart: unless-stopped
+    env_file:
+      - ../backend/.env
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+
+  frontend:
+    build:
+      context: ..
+      dockerfile: infrastructure/Dockerfile.frontend
+    container_name: prakriti_frontend
+    restart: unless-stopped
+    environment:
+      NEXT_PUBLIC_API_BASE_URL: http://localhost:8000
+      NEXT_PUBLIC_DEMO_MODE: "true"
+      NEXT_PUBLIC_SHOW_DEMO_CREDENTIALS: "true"
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+volumes:
+  prakriti_pgdata:

@@ -10,12 +10,12 @@ interface ErrorStateProps {
 
 export function ErrorState({ title = "Unable to load records", description, onRetry }: ErrorStateProps) {
   return (
-    <div className="flex flex-col items-center justify-center rounded-lg border border-red-200 bg-red-50 p-10 text-center">
-      <AlertTriangle className="mb-3 h-8 w-8 text-red-600" />
-      <h3 className="text-base font-semibold text-red-700">{title}</h3>
-      <p className="mt-1 text-sm text-red-700">{description}</p>
+    <div className="surface-card animate-rise-fade flex flex-col items-center justify-center p-10 text-center">
+      <AlertTriangle className="mb-3 h-8 w-8 text-[rgb(157,59,59)]" />
+      <h3 className="heading-font text-base font-semibold text-[rgb(125,39,39)]">{title}</h3>
+      <p className="mt-1 text-sm text-[rgb(125,39,39)]">{description}</p>
       {onRetry ? (
-        <Button className="mt-4" variant="destructive" onClick={onRetry}>
+        <Button className="mt-4" variant="primary" onClick={onRetry}>
           Retry
         </Button>
       ) : null}

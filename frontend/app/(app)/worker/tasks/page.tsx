@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 
 import { WorkerTaskCard } from "@/components/worker/task-card";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PageHeader } from "@/components/ui-extensions/page-header";
 import { listPickupTasks } from "@/lib/api/services";
@@ -32,10 +33,18 @@ export default function WorkerTasksPage() {
 
       <div className="grid grid-cols-2 gap-2">
         <Input placeholder="Search task" value={search} onChange={(event) => setSearch(event.target.value)} className="col-span-2 h-11" />
-        <button className={`h-11 rounded-md border text-sm font-medium ${status === "all" ? "bg-emerald-600 text-white" : "bg-white text-slate-700"}`} onClick={() => setStatus("all")}>All</button>
-        <button className={`h-11 rounded-md border text-sm font-medium ${status === "PENDING" ? "bg-emerald-600 text-white" : "bg-white text-slate-700"}`} onClick={() => setStatus("PENDING")}>Pending</button>
-        <button className={`h-11 rounded-md border text-sm font-medium ${status === "IN_PROGRESS" ? "bg-emerald-600 text-white" : "bg-white text-slate-700"}`} onClick={() => setStatus("IN_PROGRESS")}>In Progress</button>
-        <button className={`h-11 rounded-md border text-sm font-medium ${status === "COMPLETED" ? "bg-emerald-600 text-white" : "bg-white text-slate-700"}`} onClick={() => setStatus("COMPLETED")}>Completed</button>
+        <Button className="h-11" variant={status === "all" ? "primary" : "secondary"} onClick={() => setStatus("all")}>
+          All
+        </Button>
+        <Button className="h-11" variant={status === "PENDING" ? "primary" : "secondary"} onClick={() => setStatus("PENDING")}>
+          Pending
+        </Button>
+        <Button className="h-11" variant={status === "IN_PROGRESS" ? "primary" : "secondary"} onClick={() => setStatus("IN_PROGRESS")}>
+          In Progress
+        </Button>
+        <Button className="h-11" variant={status === "COMPLETED" ? "primary" : "secondary"} onClick={() => setStatus("COMPLETED")}>
+          Completed
+        </Button>
       </div>
 
       <div className="space-y-3">

@@ -1,77 +1,86 @@
-# Prakriti.AI Frontend
+# Frontend (Next.js)
 
-Enterprise frontend foundation for municipal waste operations and carbon intelligence.
+## Overview
 
-## Stack
-- Next.js App Router (TypeScript)
-- Tailwind CSS v4
-- shadcn-style component system
-- TanStack Query
-- Zustand for auth state
+Next.js App Router frontend for Prakriti.AI with role-based portals, worker-focused mobile flows, public website pages, and platform-admin views.
+
+## Frontend Structure
+
+- `app/` - route tree (auth, app, public, platform-admin)
+- `components/` - UI primitives and domain components
+- `lib/` - API client/services, auth helpers, constants, utilities
+- `store/` - Zustand auth store
+- `types/` - TypeScript domain/query/API types
+- `proxy.ts` - route protection and auth gating
+
+## Routing Model
+
+- `app/(auth)` - login and auth flows
+- `app/(app)` - authenticated role portals
+- `app/(public)` - public marketing/product pages
+- `app/(app)/worker/*` - worker mobile-first experience
+- `app/(app)/platform-admin/*` - platform-admin SaaS readiness pages
 
 ## Setup
+
 ```bash
 cd frontend
 npm install
 cp .env.example .env.local
+```
+
+## Run
+
+```bash
 npm run dev
 ```
 
-Open `http://localhost:3000`.
-
 ## Environment Variables
-- `NEXT_PUBLIC_API_BASE_URL`:
-  - Backend base URL (no trailing slash required)
-  - Example: `http://localhost:8000`
 
-## Auth Flow
-- Login uses `POST /auth/login` with `application/x-www-form-urlencoded` body:
-  - `username` = email
-  - `password` = password
-- Access token is stored in localStorage via Zustand auth store.
-- A lightweight cookie (`pa_token=1`) is mirrored for route gating in `proxy.ts`.
-- Current user is fetched via `GET /auth/me`.
-- Unauthorized API responses trigger logout and redirect to `/login`.
+- `NEXT_PUBLIC_API_BASE_URL` (required): backend base URL
+- `NEXT_PUBLIC_DEMO_MODE` (optional): enables tasteful demo mode hints
+- `NEXT_PUBLIC_SHOW_DEMO_CREDENTIALS` (optional): shows demo account panel on login in demo/dev contexts
 
-## Route Protection
-- `proxy.ts` protects all application routes.
-- Unauthenticated requests to protected routes are redirected to `/login`.
-- Authenticated requests to `/login` are redirected to `/dashboard`.
+## Auth + API Behavior
 
-## Pages
-### Connected to Backend List APIs
-- `/organizations` -> `GET /organizations`
-- `/cities` -> `GET /cities`
-- `/wards` -> `GET /wards`
-- `/zones` -> `GET /zones`
-- `/users` -> `GET /users`
-- `/households` -> `GET /households`
-- `/bulk-generators` -> `GET /bulk-generators`
-- `/workers` -> `GET /workers`
-- `/vehicles` -> `GET /vehicles`
-- `/routes` -> `GET /routes`
-- `/pickup-tasks` -> `GET /pickup-tasks`
-- `/environmental-summaries` -> `GET /environmental-summaries`
-- `/carbon-ledger` -> `GET /carbon-ledger`
+- Login uses `POST /auth/login` (form-urlencoded)
+- User profile uses `GET /auth/me`
+- Profile updates use `PATCH /auth/me`
+- Token is stored in local storage and mirrored via cookie signal for route gating
+- Unauthorized API responses trigger logout/redirect
 
-### Scaffold-only in this phase
-- `/dashboard`
-- `/reports`
+## Role-Based Portals
 
-## Reusable Building Blocks
-- Layout shell: sidebar, top navbar, role-aware nav
-- `PageHeader`
-- `MetricStatCard`
-- `StatusBadge`
-- `FilterBar`
-- `DataTableWrapper`
-- `EmptyState`
-- `LoadingState`
-- `ErrorState`
-- `FormSectionCard`
-- `SimpleDataTable`
+- SUPER_ADMIN / CITY_ADMIN / WARD_OFFICER dashboards
+- SANITATION_SUPERVISOR operations cockpit
+- WORKER mobile-friendly execution flows
+- PROCESSOR lifecycle/throughput views
+- AUDITOR compliance/carbon review views
+- BULK_GENERATOR history/compliance views
+
+## Worker/Mobile Section
+
+Worker routes include:
+- `/worker`
+- `/worker/tasks`
+- `/worker/shifts`
+- `/worker/routes`
+
+Designed for quick task interaction and profile/account actions on mobile.
+
+## Public Website Section
+
+Public routes include:
+- `/`
+- `/platform`
+- `/modules`
+- `/carbon-intelligence`
+- `/about`
+- `/contact`
+- `/request-demo`
 
 ## Commands
+
 ```bash
 npm run dev
 npm run lint
@@ -79,22 +88,6 @@ npm run build
 npm run start
 ```
 
-## Added Packages
-- `@tanstack/react-query`
-- `zustand`
-- `axios`
-- `zod`
-- `@hookform/resolvers`
-- `react-hook-form`
-- `lucide-react`
-- `clsx`
-- `tailwind-merge`
-- `class-variance-authority`
-- `tailwindcss-animate`
-- `sonner`
-- `@radix-ui/react-slot`
-- `@radix-ui/react-label`
-- `@radix-ui/react-dropdown-menu`
-- `@radix-ui/react-dialog`
-- `@radix-ui/react-separator`
-- `@radix-ui/react-select`
+For architecture and demo flow docs, see:
+- `../docs/frontend-architecture.md`
+- `../docs/demo-runbook.md`

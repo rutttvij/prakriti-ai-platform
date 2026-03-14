@@ -38,11 +38,7 @@ export function ListPageShell<T>({
 }: ListPageShellProps<T>) {
   return (
     <div className="space-y-6">
-      <PageHeader
-        title={title}
-        description={description}
-        actions={<Button variant="default">{createLabel}</Button>}
-      />
+      <PageHeader title={title} description={description} actions={<Button variant="primary">{createLabel}</Button>} />
 
       <FilterBar onReset={onClearFilters}>{filters}</FilterBar>
 

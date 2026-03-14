@@ -1,6 +1,6 @@
 import { apiClient } from "@/lib/api/client";
 import type { QueryParams } from "@/types/api";
-import type { LoginRequest, TokenResponse, User } from "@/types/auth";
+import type { LoginRequest, TokenResponse, UpdateProfileRequest, User } from "@/types/auth";
 import type {
   BulkGeneratorReportPage,
   CarbonLedgerReportPage,
@@ -19,6 +19,16 @@ import type {
   BulkGeneratorLifecycleAuditExport,
   CarbonEventLifecycleAuditExport,
 } from "@/types/audit";
+import type {
+  PlatformAuditLogFilters,
+  PlatformAuditLogRecord,
+  PlatformDashboardResponse,
+  PlatformFeatureFlagItem,
+  PlatformSubscriptionItem,
+  SystemHealthResponse,
+  TenantDetail,
+  TenantSummary,
+} from "@/types/platform-admin";
 import type {
   Batch,
   BulkGenerator,
@@ -98,6 +108,11 @@ export async function login(payload: LoginRequest): Promise<TokenResponse> {
 
 export async function getCurrentUser(): Promise<User> {
   const { data } = await apiClient.get<User>("/auth/me");
+  return data;
+}
+
+export async function updateCurrentUserProfile(payload: UpdateProfileRequest): Promise<User> {
+  const { data } = await apiClient.patch<User>("/auth/me", payload);
   return data;
 }
 
@@ -516,6 +531,43 @@ export async function getEnvironmentalSummaryReport(params?: QueryParams): Promi
 
 export async function getCarbonLedgerReport(params?: QueryParams): Promise<CarbonLedgerReportPage> {
   const { data } = await apiClient.get<CarbonLedgerReportPage>("/reports/carbon-ledger", { params: withQuery(params) });
+  return data;
+}
+
+export async function getPlatformAdminDashboard(): Promise<PlatformDashboardResponse> {
+  const { data } = await apiClient.get<PlatformDashboardResponse>("/platform-admin/dashboard");
+  return data;
+}
+
+export async function getPlatformTenants(): Promise<TenantSummary[]> {
+  const { data } = await apiClient.get<TenantSummary[]>("/platform-admin/tenants");
+  return data;
+}
+
+export async function getPlatformTenantDetail(tenantId: string): Promise<TenantDetail> {
+  const { data } = await apiClient.get<TenantDetail>(`/platform-admin/tenants/${tenantId}`);
+  return data;
+}
+
+export async function getPlatformSystemHealth(): Promise<SystemHealthResponse> {
+  const { data } = await apiClient.get<SystemHealthResponse>("/platform-admin/system-health");
+  return data;
+}
+
+export async function getPlatformAuditLogs(params?: PlatformAuditLogFilters): Promise<PlatformAuditLogRecord[]> {
+  const { data } = await apiClient.get<PlatformAuditLogRecord[]>("/platform-admin/audit-logs", {
+    params: withQuery(params),
+  });
+  return data;
+}
+
+export async function getPlatformSubscriptions(): Promise<PlatformSubscriptionItem[]> {
+  const { data } = await apiClient.get<PlatformSubscriptionItem[]>("/platform-admin/subscriptions");
+  return data;
+}
+
+export async function getPlatformFeatureFlags(): Promise<PlatformFeatureFlagItem[]> {
+  const { data } = await apiClient.get<PlatformFeatureFlagItem[]>("/platform-admin/feature-flags");
   return data;
 }
 

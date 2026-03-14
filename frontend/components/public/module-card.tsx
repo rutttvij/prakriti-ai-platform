@@ -10,11 +10,11 @@ interface ModuleCardProps {
 
 export function ModuleCard({ title, description, href }: ModuleCardProps) {
   const content = (
-    <Card className="h-full border-slate-200 bg-white/95 transition hover:-translate-y-0.5 hover:shadow-md">
+    <Card className="h-full transition hover:-translate-y-0.5 hover:shadow-xl">
       <CardContent className="space-y-3 p-5">
-        <h3 className="text-base font-semibold text-slate-900">{title}</h3>
-        <p className="text-sm text-slate-600">{description}</p>
-        {href ? <p className="text-xs font-semibold uppercase tracking-wide text-emerald-700">Learn more</p> : null}
+        <h3 className="heading-font text-base font-semibold text-ink">{title}</h3>
+        <p className="text-sm text-ink-muted">{description}</p>
+        {href ? <p className="micro-label text-[0.62rem] text-[var(--brand-700)]">Learn more</p> : null}
       </CardContent>
     </Card>
   );

@@ -10,9 +10,9 @@ from app.core.security import create_access_token
 from app.db.session import get_db
 from app.models.user import User
 from app.schemas.token import Token
-from app.schemas.user import UserRead
+from app.schemas.user import UserRead, UserSelfUpdate
 from app.services.auth_service import authenticate_user
-from app.services.user_service import to_user_read
+from app.services.user_service import to_user_read, update_current_user_profile
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -37,3 +37,13 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
 @router.get("/me", response_model=UserRead)
 def get_me(current_user: User = Depends(get_current_active_user)) -> UserRead:
     return to_user_read(current_user)
+
+
+@router.patch("/me", response_model=UserRead)
+def update_me(
+    payload: UserSelfUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_active_user),
+) -> UserRead:
+    updated_user = update_current_user_profile(db, current_user, payload)
+    return to_user_read(updated_user)

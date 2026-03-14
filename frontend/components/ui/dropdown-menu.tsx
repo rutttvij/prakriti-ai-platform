@@ -19,7 +19,7 @@ function DropdownMenuContent({ className, sideOffset = 4, ...props }: React.Comp
     <DropdownMenuPrimitive.Portal>
       <DropdownMenuPrimitive.Content
         sideOffset={sideOffset}
-        className={cn("z-50 min-w-[8rem] overflow-hidden rounded-md border border-slate-200 bg-white p-1 text-slate-900 shadow-md", className)}
+        className={cn("surface-card z-50 min-w-[10rem] overflow-hidden p-1 text-ink shadow-xl", className)}
         {...props}
       />
     </DropdownMenuPrimitive.Portal>
@@ -30,7 +30,7 @@ function DropdownMenuItem({ className, inset, ...props }: React.ComponentProps<t
   return (
     <DropdownMenuPrimitive.Item
       className={cn(
-        "relative flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-slate-100",
+        "relative flex cursor-pointer select-none items-center rounded-xl px-2.5 py-2 text-sm outline-none transition-colors hover:bg-[rgba(231,251,240,0.48)]",
         inset && "pl-8",
         className,
       )}
@@ -40,13 +40,13 @@ function DropdownMenuItem({ className, inset, ...props }: React.ComponentProps<t
 }
 
 function DropdownMenuSeparator({ className, ...props }: React.ComponentProps<typeof DropdownMenuPrimitive.Separator>) {
-  return <DropdownMenuPrimitive.Separator className={cn("-mx-1 my-1 h-px bg-slate-200", className)} {...props} />;
+  return <DropdownMenuPrimitive.Separator className={cn("-mx-1 my-1 h-px bg-[var(--soft-border)]", className)} {...props} />;
 }
 
 function DropdownMenuCheckboxItem({ className, children, checked, ...props }: React.ComponentProps<typeof DropdownMenuPrimitive.CheckboxItem>) {
   return (
     <DropdownMenuPrimitive.CheckboxItem
-      className={cn("relative flex cursor-pointer select-none items-center rounded-sm py-1.5 pr-2 pl-8 text-sm outline-none transition-colors hover:bg-slate-100", className)}
+      className={cn("relative flex cursor-pointer select-none items-center rounded-xl py-2 pr-2 pl-8 text-sm outline-none transition-colors hover:bg-[rgba(231,251,240,0.48)]", className)}
       checked={checked}
       {...props}
     >
@@ -64,7 +64,7 @@ function DropdownMenuSubTrigger({ className, inset, children, ...props }: React.
   return (
     <DropdownMenuPrimitive.SubTrigger
       className={cn(
-        "flex cursor-pointer select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none hover:bg-slate-100",
+        "flex cursor-pointer select-none items-center rounded-xl px-2.5 py-2 text-sm outline-none hover:bg-[rgba(231,251,240,0.48)]",
         inset && "pl-8",
         className,
       )}
@@ -77,12 +77,7 @@ function DropdownMenuSubTrigger({ className, inset, children, ...props }: React.
 }
 
 function DropdownMenuSubContent({ className, ...props }: React.ComponentProps<typeof DropdownMenuPrimitive.SubContent>) {
-  return (
-    <DropdownMenuPrimitive.SubContent
-      className={cn("z-50 min-w-[8rem] overflow-hidden rounded-md border border-slate-200 bg-white p-1 text-slate-900 shadow-md", className)}
-      {...props}
-    />
-  );
+  return <DropdownMenuPrimitive.SubContent className={cn("surface-card z-50 min-w-[10rem] overflow-hidden p-1 text-ink shadow-xl", className)} {...props} />;
 }
 
 export {

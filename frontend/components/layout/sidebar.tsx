@@ -12,17 +12,21 @@ interface SidebarProps {
 
 export function Sidebar({ user }: SidebarProps) {
   return (
-    <aside className="hidden w-72 shrink-0 border-r border-slate-200 bg-white lg:flex lg:flex-col">
-      <div className="flex h-16 items-center gap-2 px-6">
-        <LeafyGreen className="h-6 w-6 text-emerald-600" />
-        <div>
-          <p className="text-sm font-semibold text-slate-900">Prakriti.AI</p>
-          <p className="text-xs text-slate-500">Municipal Ops Console</p>
+    <aside className="hidden w-72 shrink-0 p-3 lg:flex lg:flex-col xl:w-80 xl:p-4">
+      <div className="surface-card-strong flex max-h-[calc(100vh-2rem)] flex-col overflow-hidden px-4 py-5 xl:max-h-[calc(100vh-2.5rem)]">
+        <div className="flex items-center gap-3 px-2">
+          <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[linear-gradient(140deg,var(--brand-500),var(--brand-700))] text-white shadow-lg">
+            <LeafyGreen className="h-5 w-5" />
+          </div>
+          <div>
+            <p className="micro-label">Civic Intelligence</p>
+            <p className="heading-font text-lg font-semibold text-ink">Prakriti.AI</p>
+          </div>
         </div>
-      </div>
-      <Separator />
-      <div className="flex-1 overflow-y-auto p-3">
-        <SidebarNav user={user} />
+        <Separator className="my-4 bg-[var(--soft-border)]" />
+        <div className="overflow-y-auto pr-1">
+          <SidebarNav user={user} />
+        </div>
       </div>
     </aside>
   );

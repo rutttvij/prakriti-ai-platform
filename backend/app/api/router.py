@@ -23,6 +23,7 @@ from app.api.routes.organizations import router as organization_router
 from app.api.routes.pickup_logs import router as pickup_log_router
 from app.api.routes.pickup_tasks import router as pickup_task_router
 from app.api.routes.processing_records import router as processing_record_router
+from app.api.routes.platform_admin import router as platform_admin_router
 from app.api.routes.qr_tags import router as qr_tag_router
 from app.api.routes.recovery_certificates import router as recovery_certificate_router
 from app.api.routes.reports import router as reports_router
@@ -39,6 +40,7 @@ from app.api.routes.zones import router as zone_router
 api_router = APIRouter()
 api_router.include_router(health_router)
 api_router.include_router(auth_router)
+api_router.include_router(platform_admin_router)
 api_router.include_router(dashboard_router)
 api_router.include_router(reports_router)
 api_router.include_router(audit_export_router)

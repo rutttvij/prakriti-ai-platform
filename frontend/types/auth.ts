@@ -37,3 +37,11 @@ export interface TokenResponse {
   access_token: string;
   token_type: string;
 }
+
+export interface UpdateProfileRequest {
+  full_name?: string;
+  email?: string;
+  phone?: string | null;
+  current_password?: string;
+  new_password?: string;
+}
